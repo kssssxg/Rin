@@ -10,6 +10,7 @@
   ],
   "private": true,
   "scripts": {
+    "postinstall": "node scripts/postinstall.mjs",
     "dev": "bun cli/bin/rin.ts dev",
     "dev:setup": "bun cli/bin/rin.ts setup-dev",
     "dev:client": "bun cli/bin/rin.ts dev --client",

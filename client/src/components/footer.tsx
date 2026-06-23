@@ -83,7 +83,7 @@ function Footer() {
     };
 
     return (
-        <footer>
+        <footer className="rin-glass-footer">
             <Helmet>
                 <link rel="alternate" type="application/rss+xml" title={siteName} href="/rss.xml" />
                 <link rel="alternate" type="application/atom+xml" title={siteName} href="/atom.xml" />

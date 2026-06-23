@@ -65,11 +65,11 @@ export const classicLayoutDefinition: HeaderLayoutDefinition = {
   },
   renderRouteShell({ header, content, footer }) {
     return (
-      <>
+      <div className="rin-glass-shell">
         {header}
-        {content}
+        <div className="rin-glass-content">{content}</div>
         {footer}
-      </>
+      </div>
     );
   },
 };

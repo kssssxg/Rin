@@ -5,6 +5,7 @@ import { defaultClientConfig } from "../state/config";
 import { applyThemeColor } from "../utils/theme-color";
 import { readBootstrappedClientConfig } from "./bootstrap-config";
 import { client } from "./runtime";
+import { initAmbientCanvas, initClickEffect } from "../ambient-effects";
 
 function applyViewportScaling() {
   const highResolutionThreshold = 2560;
@@ -54,6 +55,15 @@ export function useAppBootstrap() {
     }
 
     initializedRef.current = true;
+
+    // 环境光效和点击特效
+    const cleanupAmbient = initAmbientCanvas();
+    const cleanupClick = initClickEffect();
+
+    return () => {
+      cleanupAmbient?.();
+      cleanupClick?.();
+    };
   }, []);
 
   return { config, profile };

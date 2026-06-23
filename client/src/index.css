@@ -1,5 +1,6 @@
 @import "./glassmorphism.css";
 @import "./base.css";
+@import "./glass-theme.css";
 
 :root {
   --theme-rgb: 102 126 234;

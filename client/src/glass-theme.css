@@ -1,0 +1,328 @@
+/* ================= 玻璃拟态主题 - 适配 Rin 博客 ================= */
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
+
+:root {
+  --glass-bg: rgba(255, 255, 255, 0.55);
+  --glass-bg-dark: rgba(30, 30, 40, 0.55);
+  --glass-border: rgba(255, 255, 255, 0.25);
+  --glass-border-dark: rgba(255, 255, 255, 0.08);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  --glass-shadow-dark: 0 8px 32px rgba(0, 0, 0, 0.3);
+  --glass-blur: blur(20px) saturate(160%);
+  --glass-radius: 20px;
+  --card-radius: 16px;
+  --bg-overlay: rgba(255, 255, 255, 0.15);
+  --bg-overlay-dark: rgba(0, 0, 0, 0.2);
+}
+
+/* 背景图片 */
+body {
+  background-image: url('https://img.8845.top/acg') !important;
+  background-size: cover !important;
+  background-position: center !important;
+  background-attachment: fixed !important;
+  background-repeat: no-repeat !important;
+}
+
+/* 背景遮罩 - 让内容可读 */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 0;
+  pointer-events: none;
+}
+
+[data-color-mode="dark"] body::before {
+  background: rgba(0, 0, 0, 0.25);
+}
+
+/* 环境光效 Canvas */
+#ambient-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.4;
+}
+
+/* 玻璃卡片 */
+.glass-card {
+  background: var(--glass-bg) !important;
+  backdrop-filter: var(--glass-blur) !important;
+  -webkit-backdrop-filter: var(--glass-blur) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: var(--glass-radius) !important;
+  box-shadow: var(--glass-shadow) !important;
+  transition: all 0.3s ease;
+}
+
+[data-color-mode="dark"] .glass-card {
+  background: var(--glass-bg-dark) !important;
+  border-color: var(--glass-border-dark) !important;
+  box-shadow: var(--glass-shadow-dark) !important;
+}
+
+/* 主内容区玻璃容器 */
+.rin-glass-shell {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 内容主体玻璃面板 */
+.rin-glass-content {
+  flex: 1;
+  width: 100%;
+  max-width: 1000px;
+  margin: 20px auto;
+  padding: 24px;
+  background: var(--glass-bg) !important;
+  backdrop-filter: var(--glass-blur) !important;
+  -webkit-backdrop-filter: var(--glass-blur) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: var(--glass-radius) !important;
+  box-shadow: var(--glass-shadow) !important;
+  transition: all 0.3s ease;
+}
+
+[data-color-mode="dark"] .rin-glass-content {
+  background: var(--glass-bg-dark) !important;
+  border-color: var(--glass-border-dark) !important;
+  box-shadow: var(--glass-shadow-dark) !important;
+}
+
+/* 头部玻璃 */
+.rin-glass-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(255, 255, 255, 0.4) !important;
+  backdrop-filter: blur(24px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+  border-bottom: 1px solid var(--glass-border) !important;
+  transition: all 0.3s ease;
+}
+
+[data-color-mode="dark"] .rin-glass-header {
+  background: rgba(20, 20, 30, 0.5) !important;
+  border-color: var(--glass-border-dark) !important;
+}
+
+/* 底部玻璃 */
+.rin-glass-footer {
+  background: rgba(255, 255, 255, 0.3) !important;
+  backdrop-filter: blur(16px) saturate(150%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(150%) !important;
+  border-top: 1px solid var(--glass-border) !important;
+  transition: all 0.3s ease;
+}
+
+[data-color-mode="dark"] .rin-glass-footer {
+  background: rgba(20, 20, 30, 0.4) !important;
+  border-color: var(--glass-border-dark) !important;
+}
+
+/* 玻璃导航按钮 - 让原本的导航栏透明 */
+.rin-glass-header .bg-w,
+.rin-glass-header [class*="bg-w"] {
+  background: rgba(255, 255, 255, 0.3) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+}
+
+[data-color-mode="dark"] .rin-glass-header .bg-w,
+[data-color-mode="dark"] .rin-glass-header [class*="bg-w"] {
+  background: rgba(30, 30, 40, 0.4) !important;
+}
+
+/* 卡片组件玻璃化 */
+.rin-glass-card {
+  background: rgba(255, 255, 255, 0.5) !important;
+  backdrop-filter: blur(12px) saturate(140%) !important;
+  -webkit-backdrop-filter: blur(12px) saturate(140%) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: var(--card-radius) !important;
+  box-shadow: var(--glass-shadow) !important;
+  transition: all 0.3s ease;
+}
+
+[data-color-mode="dark"] .rin-glass-card {
+  background: rgba(30, 30, 40, 0.5) !important;
+  border-color: var(--glass-border-dark) !important;
+  box-shadow: var(--glass-shadow-dark) !important;
+}
+
+/* 输入框玻璃化 */
+.rin-glass-input {
+  background: rgba(255, 255, 255, 0.3) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: 12px !important;
+}
+
+[data-color-mode="dark"] .rin-glass-input {
+  background: rgba(30, 30, 40, 0.3) !important;
+  border-color: var(--glass-border-dark) !important;
+}
+
+/* 玻璃按钮 */
+.rin-glass-btn {
+  background: rgba(255, 255, 255, 0.3) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: 12px !important;
+  transition: all 0.2s ease;
+}
+
+.rin-glass-btn:hover {
+  background: rgba(255, 255, 255, 0.5) !important;
+}
+
+/* 右击菜单气泡 */
+.popup-content {
+  background: rgba(255, 255, 255, 0.6) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: 16px !important;
+  box-shadow: var(--glass-shadow) !important;
+}
+
+[data-color-mode="dark"] .popup-content {
+  background: rgba(30, 30, 40, 0.6) !important;
+  border-color: var(--glass-border-dark) !important;
+  box-shadow: var(--glass-shadow-dark) !important;
+}
+
+/* Toast 玻璃化 */
+#toast-glass {
+  position: fixed;
+  top: -60px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255, 255, 255, 0.7) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border: 1px solid var(--glass-border) !important;
+  padding: 12px 24px;
+  border-radius: 50px;
+  box-shadow: var(--glass-shadow) !important;
+  transition: top 0.4s ease;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.9rem;
+  color: #333;
+}
+
+#toast-glass.show { top: 30px; }
+
+[data-color-mode="dark"] #toast-glass {
+  background: rgba(30, 30, 40, 0.7) !important;
+  color: #e0e0e0;
+}
+
+/* 登录页面玻璃 */
+.rin-glass-login {
+  background: rgba(255, 255, 255, 0.5) !important;
+  backdrop-filter: var(--glass-blur) !important;
+  -webkit-backdrop-filter: var(--glass-blur) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: var(--glass-radius) !important;
+  box-shadow: var(--glass-shadow) !important;
+  padding: 40px;
+  max-width: 420px;
+  margin: 80px auto;
+}
+
+[data-color-mode="dark"] .rin-glass-login {
+  background: rgba(30, 30, 40, 0.5) !important;
+  border-color: var(--glass-border-dark) !important;
+}
+
+/* 侧边栏玻璃 */
+.rin-glass-sidebar {
+  background: rgba(255, 255, 255, 0.3) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border-right: 1px solid var(--glass-border) !important;
+}
+
+[data-color-mode="dark"] .rin-glass-sidebar {
+  background: rgba(20, 20, 30, 0.4) !important;
+  border-color: var(--glass-border-dark) !important;
+}
+
+/* 骨架屏适配玻璃主题 */
+#skeleton-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 99999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 点击波纹效果 */
+.click-effect {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  border-radius: 50%;
+  animation: clickRipple 0.6s ease-out forwards;
+}
+
+@keyframes clickRipple {
+  0% { width: 0; height: 0; opacity: 0.5; border: 2px solid rgba(99, 102, 241, 0.6); }
+  100% { width: 100px; height: 100px; opacity: 0; border: 2px solid transparent; }
+}
+
+/* 页面过渡动画 */
+@keyframes pageFadeIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.rin-page-enter {
+  animation: pageFadeIn 0.4s ease forwards;
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+  .rin-glass-content {
+    margin: 12px auto;
+    padding: 16px;
+    border-radius: 16px;
+  }
+
+  .rin-glass-login {
+    margin: 40px 16px;
+    padding: 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .rin-glass-content {
+    margin: 8px;
+    padding: 12px;
+    border-radius: 12px;
+  }
+}
