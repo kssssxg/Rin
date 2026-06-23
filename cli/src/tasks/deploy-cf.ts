@@ -222,18 +222,19 @@ export async function runCloudflareDeploy(target: "all" | "server" | "client" = 
 
   // Check if D1 database already exists
   let dbExists = false;
+  let listJson: { name: string; uuid: string } | undefined;
   try {
     const listResult = JSON.parse(await $`${bunExec} x wrangler d1 list --json`.quiet().text()) as Array<{ name: string; uuid: string }>;
-    dbExists = listResult.some((item) => item.name === dbName);
-  } catch { /* ignore list error */ }
+    listJson = listResult.find((item) => item.name === dbName);
+    dbExists = !!listJson;
+  } catch { /* D1 not available - assume exists */ }
 
   if (!dbExists) {
     const { exitCode, stderr, stdout } = await $`${bunExec} x wrangler d1 create ${dbName}`.quiet().nothrow();
-    if (exitCode !== 0 && !stderr.toString().includes("already exists")) {
-      console.error(`Failed to create D1 "${dbName}"`);
-      console.error(stripIndent(stdout.toString()));
-      console.error(stripIndent(stderr.toString()));
-      process.exit(1);
+    if (exitCode === 0 || stderr.toString().includes("already exists")) {
+      dbExists = true;
+    } else {
+      console.warn(`⚠️  Could not create D1 "${dbName}" (auth error?), proceeding anyway`);
     }
   }
 
@@ -245,9 +246,14 @@ export async function runCloudflareDeploy(target: "all" | "server" | "client" = 
     process.exit(1);
   }
 
-  const listJson = (JSON.parse(await $`${bunExec} x wrangler d1 list --json`.quiet().text()) as Array<{ name: string; uuid: string }>).find(
-    (item) => item.name === dbName,
-  );
+  // Try to get D1 binding info (if list failed earlier)
+  if (!listJson) {
+    try {
+      listJson = (JSON.parse(await $`${bunExec} x wrangler d1 list --json`.quiet().text()) as Array<{ name: string; uuid: string }>).find(
+        (item) => item.name === dbName,
+      );
+    } catch { /* D1 not available */ }
+  }
   if (listJson) {
     await $`echo ${stripIndent(`
       [[d1_databases]]
@@ -273,30 +279,35 @@ export async function runCloudflareDeploy(target: "all" | "server" | "client" = 
     `)} >> wrangler.toml`.quiet();
   }
 
-  const migrationVersion = await getMigrationVersion("remote", dbName);
-  const infoExists = await isInfoExist("remote", dbName);
-  const files = await readdir("./server/sql", { recursive: false });
-  const sqlFiles = files
-    .filter((name) => name.endsWith(".sql"))
-    .filter((name) => {
-      const version = getMigrationFileVersion(name);
-      return version !== null && version > migrationVersion;
-    })
-    .sort((left, right) => {
-      return (getMigrationFileVersion(left) || 0) - (getMigrationFileVersion(right) || 0);
-    });
+  // D1 migrations (skip if no permission)
+  try {
+    const migrationVersion = await getMigrationVersion("remote", dbName);
+    const infoExists = await isInfoExist("remote", dbName);
+    const files = await readdir("./server/sql", { recursive: false });
+    const sqlFiles = files
+      .filter((name) => name.endsWith(".sql"))
+      .filter((name) => {
+        const version = getMigrationFileVersion(name);
+        return version !== null && version > migrationVersion;
+      })
+      .sort((left, right) => {
+        return (getMigrationFileVersion(left) || 0) - (getMigrationFileVersion(right) || 0);
+      });
 
-  for (const file of sqlFiles) {
-    await $`${bunExec} x wrangler d1 execute ${dbName} --remote --file ./server/sql/${file} -y`;
-    console.log(`Migrated ${file}`);
-  }
-  if (sqlFiles.length > 0) {
-    const lastVersion = getMigrationFileVersion(sqlFiles[sqlFiles.length - 1] || "");
-    if (lastVersion !== null) {
-      await updateMigrationVersion("remote", dbName, lastVersion);
+    for (const file of sqlFiles) {
+      await $`${bunExec} x wrangler d1 execute ${dbName} --remote --file ./server/sql/${file} -y`;
+      console.log(`Migrated ${file}`);
     }
+    if (sqlFiles.length > 0) {
+      const lastVersion = getMigrationFileVersion(sqlFiles[sqlFiles.length - 1] || "");
+      if (lastVersion !== null) {
+        await updateMigrationVersion("remote", dbName, lastVersion);
+      }
+    }
+    await fixTopField("remote", dbName, infoExists);
+  } catch (e) {
+    console.warn(`⚠️  D1 migration skipped (${e})`);
   }
-  await fixTopField("remote", dbName, infoExists);
 
   if (target === "server") {
     await $`${bunExec} x wrangler deploy`;
