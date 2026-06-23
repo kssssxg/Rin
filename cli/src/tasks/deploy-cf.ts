@@ -220,12 +220,21 @@ export async function runCloudflareDeploy(target: "all" | "server" | "client" = 
     `),
   );
 
-  const { exitCode, stderr, stdout } = await $`${bunExec} x wrangler d1 create ${dbName}`.quiet().nothrow();
-  if (exitCode !== 0 && !stderr.toString().includes("already exists")) {
-    console.error(`Failed to create D1 "${dbName}"`);
-    console.error(stripIndent(stdout.toString()));
-    console.error(stripIndent(stderr.toString()));
-    process.exit(1);
+  // Check if D1 database already exists
+  let dbExists = false;
+  try {
+    const listResult = JSON.parse(await $`${bunExec} x wrangler d1 list --json`.quiet().text()) as Array<{ name: string; uuid: string }>;
+    dbExists = listResult.some((item) => item.name === dbName);
+  } catch { /* ignore list error */ }
+
+  if (!dbExists) {
+    const { exitCode, stderr, stdout } = await $`${bunExec} x wrangler d1 create ${dbName}`.quiet().nothrow();
+    if (exitCode !== 0 && !stderr.toString().includes("already exists")) {
+      console.error(`Failed to create D1 "${dbName}"`);
+      console.error(stripIndent(stdout.toString()));
+      console.error(stripIndent(stderr.toString()));
+      process.exit(1);
+    }
   }
 
   const queueCreate = await $`${bunExec} x wrangler queues create ${taskQueueName}`.quiet().nothrow();
