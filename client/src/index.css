@@ -1,9 +1,10 @@
+@import "./glassmorphism.css";
 @import "./base.css";
 
 :root {
-  --theme-rgb: 252 70 107;
-  --theme-hover-rgb: 177 48 73;
-  --theme-active-rgb: 151 32 56;
+  --theme-rgb: 102 126 234;
+  --theme-hover-rgb: 118 75 162;
+  --theme-active-rgb: 90 60 140;
 }
 
 /* cantarell-latin-400-normal */
@@ -20,25 +21,31 @@
 }
 
 body {
-  @apply bg-background-light dark:bg-background-dark text-gray-800;
-  font-family: Cantarell, "Source Han Serif CN VF" !important;
+  font-family: 'Noto Sans SC', Cantarell, "Source Han Serif CN VF" !important;
+  color: var(--text-main);
 }
 
 textarea:focus {
   outline: none;
 }
 
+/* Markdown 样式 - 毛玻璃适配 */
 .wmde-markdown {
-  @apply bg-w;
-  font-family: Cantarell, "Source Han Serif CN VF" !important;
+  background: transparent !important;
+  font-family: 'Noto Sans SC', Cantarell, "Source Han Serif CN VF" !important;
+  color: var(--text-main);
 }
 
 .w-md-editor {
-  @apply bg-w;
+  background: var(--glass-bg) !important;
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--card-radius);
 }
 
 .wmde-markdown img {
-  @apply rounded-lg;
+  border-radius: 12px;
   display: block;
   margin-left: auto;
   margin-right: auto;
@@ -53,47 +60,76 @@ ul {
 }
 
 .link-line a {
-  @apply hover:underline;
+  color: var(--theme-accent);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.link-line a:hover {
+  color: var(--theme-accent2);
+  text-decoration: underline;
 }
 
 .wmde-markdown code {
-  @apply text-theme bg-secondary;
+  color: var(--theme-accent);
+  background: rgba(102, 126, 234, 0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
 }
 
 .markdown-alert {
-  @apply !border-l-2 border-2 rounded-lg !py-4 my-4 !px-4 !leading-snug space-y-0;
+  border-left: 4px solid var(--theme-accent);
+  border-radius: 12px;
+  padding: 16px;
+  margin: 16px 0;
+  background: rgba(102, 126, 234, 0.05);
 }
 
 .markdown-alert-note {
-  @apply !border-indigo-300 bg-indigo-100 !text-indigo-400 dark:!bg-indigo-900 dark:!text-indigo-300 dark:!border-indigo-900;
+  border-color: #667eea;
+  background: rgba(102, 126, 234, 0.1);
 }
 
 .markdown-alert-warning {
-  @apply !border-yellow-300 bg-yellow-100 !text-yellow-400 dark:!bg-yellow-900 dark:!text-yellow-300 dark:!border-yellow-900;
+  border-color: #f59e0b;
+  background: rgba(245, 158, 11, 0.1);
 }
 
 .markdown-alert-tip {
-  @apply !border-green-300 bg-green-100 !text-green-400 dark:!bg-green-900 dark:!text-green-300 dark:!border-green-900;
+  border-color: #10b981;
+  background: rgba(16, 185, 129, 0.1);
 }
 
 .markdown-alert-important {
-  @apply !border-purple-300 bg-purple-100 !text-purple-400 dark:!bg-purple-900 dark:!text-purple-300 dark:!border-purple-900;
+  border-color: #8b5cf6;
+  background: rgba(139, 92, 246, 0.1);
 }
 
 .markdown-alert-caution {
-  @apply !border-red-300 bg-red-100 !text-red-400 dark:!bg-red-900 dark:!text-red-300 dark:!border-red-900;
+  border-color: #ef4444;
+  background: rgba(239, 68, 68, 0.1);
 }
 
 .markdown-alert-title {
-  @apply flex flex-row items-center !mb-0 !text-inherit !font-bold fill-current;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 8px;
+  font-weight: bold;
+  color: var(--text-main);
 }
 
 .p-inputtext {
-  @apply bg-secondary text-end px-2 py-2;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  padding: 8px 12px;
+  color: var(--text-main);
 }
 
 .octicon {
-  @apply mr-1 w-3;
+  margin-right: 4px;
+  width: 12px;
 }
 
 .katex {
@@ -101,7 +137,7 @@ ul {
   overflow-y: hidden;
 }
 
-/* animation */
+/* 动画 */
 
 @keyframes anvil {
   0% {
@@ -136,21 +172,25 @@ ul {
 }
 
 .table {
-  @apply w-full border-collapse my-4;
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
   overflow-x: auto;
   display: block !important;
 }
 
 .table th,
 .table td {
-  @apply border border-slate-500 dark:border-slate-300 px-4 py-2;
+  border: 1px solid var(--glass-border);
+  padding: 12px 16px;
 }
 
 .table th {
-  @apply bg-slate-200 dark:bg-slate-700;
+  background: rgba(102, 126, 234, 0.1);
+  font-weight: 600;
 }
 
-/* TOC Style */
+/* TOC 样式 */
 
 .toc {
   overflow-y: auto;
@@ -171,10 +211,16 @@ ul {
 }
 
 a.toc-link {
-  color: currentColor;
+  color: var(--text-main);
   height: 100%;
   width: 100%;
   display: block;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+a.toc-link:hover {
+  color: var(--theme-accent);
 }
 
 .is-collapsible {
@@ -197,7 +243,7 @@ a.toc-link {
 }
 
 .toc-link::before {
-  background-color: #eee;
+  background-color: var(--glass-border);
   content: " ";
   display: inline-block;
   height: inherit;
@@ -208,5 +254,5 @@ a.toc-link {
 }
 
 .is-active-link::before {
-  @apply bg-theme;
+  background-color: var(--theme-accent);
 }
